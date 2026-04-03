@@ -7,12 +7,14 @@
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-auth.js";
-
+import { getDatabase, ref, set, push, onValue, increment } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-database.js";
 const firebaseConfig = {
   apiKey: "YOUR_API_KEY",
   authDomain: "YOUR_DOMAIN",
   projectId: "YOUR_PROJECT_ID",
 };
+
+const db = getDatabase(app);
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
@@ -166,7 +168,11 @@ html, body {
     <button id="logout">Logout</button>
     <button>Start Live</button>
   </div>
-
+<div>
+  <input id="comment-input-video1" placeholder="Write comment">
+  <button onclick="addComment('video1')">Post</button>
+  <div id="comments-video1"></div>
+</div>
   <div class="feed">
 
     <div class="video">
@@ -191,7 +197,7 @@ html, body {
           <button>❤️</button>
           <button>💬</button>
           <button>⭐</button>
-        </div>
+        </div><button onclick="likeVideo('video1')">❤️ <span id="likes-video1">0</span></button>
         <div class="bottom">
           <h4>@seller</h4>
           <p>Shop now 💰</p>
@@ -213,10 +219,47 @@ function autoPlay() {
     else v.pause();
   });
 }
+function loadLikes(videoId){
+  const likesRef = ref(db, 'likes/' + videoId);
 
+  onValue(likesRef, snapshot => {
+    document.getElementById('likes-' + videoId).innerText = snapshot.val() || 0;
+  });
+}
+function loadComments(videoId){
+  const commentsRef = ref(db, 'comments/' + videoId);
+
+  onValue(commentsRef, snapshot => {
+    const container = document.getElementById('comments-' + videoId);
+    container.innerHTML = "";
+
+    snapshot.forEach(child => {
+      const p = document.createElement("p");
+      p.innerText = child.val().text;
+      container.appendChild(p);
+    });
+  });
+}
+
+loadComments('video1');
+loadLikes('video1');
 window.addEventListener("scroll", autoPlay);
 window.addEventListener("load", autoPlay);
-</script>
+</script>window.likeVideo = function(videoId){
+  const likesRef = ref(db, 'likes/' + videoId);
+window.addComment = function(videoId){
+  const input = document.getElementById('comment-input-' + videoId);
+  const commentsRef = ref(db, 'comments/' + videoId);
+
+  push(commentsRef, {
+    text: input.value,
+    time: Date.now()
+  });
+
+  input.value = "";
+};
+  set(likesRef, increment(1));
+};
 
 </body>
 </html>
