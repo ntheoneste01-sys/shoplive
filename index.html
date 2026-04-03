@@ -4,123 +4,201 @@
 <meta charset="UTF-8">
 <title>SHOPLIVE</title>
 
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-auth.js";
+
+const firebaseConfig = {
+  apiKey: "YOUR_API_KEY",
+  authDomain: "YOUR_DOMAIN",
+  projectId: "YOUR_PROJECT_ID",
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+
+window.addEventListener("load", () => {
+
+  const signup = document.getElementById("signup");
+  const login = document.getElementById("login");
+  const logout = document.getElementById("logout");
+
+  signup.onclick = () => {
+    createUserWithEmailAndPassword(auth, email.value, password.value)
+    .catch(e => alert(e.message));
+  };
+
+  login.onclick = () => {
+    signInWithEmailAndPassword(auth, email.value, password.value)
+    .catch(e => alert(e.message));
+  };
+
+  logout.onclick = () => signOut(auth);
+
+  onAuthStateChanged(auth, user => {
+    document.getElementById("auth").style.display = user ? "none" : "block";
+    document.getElementById("app").style.display = user ? "block" : "none";
+  });
+
+});
+</script>
+
 <style>
 html, body {
   margin: 0;
-  padding: 0;
   height: 100%;
   background: black;
+  font-family: Arial;
   overflow: hidden;
-  font-family: Arial, sans-serif;
 }
 
+/* AUTH */
+#auth {
+  position: absolute;
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%);
+  color:white;
+  text-align:center;
+}
+
+#auth input {
+  padding:10px;
+  margin:5px;
+  width:200px;
+}
+
+#auth button {
+  padding:10px;
+  margin:5px;
+  background:#007BFF;
+  color:white;
+  border:none;
+}
+
+/* APP */
+#app {
+  display:none;
+}
+
+/* FEED */
 .feed {
-  height: 100vh;
-  overflow-y: scroll;
-  scroll-snap-type: y mandatory;
+  height:100vh;
+  overflow-y:scroll;
+  scroll-snap-type:y mandatory;
 }
 
-.video-container {
-  position: relative;
-  height: 100vh;
-  width: 100%;
-  scroll-snap-align: start;
+.video {
+  height:100vh;
+  position:relative;
+  scroll-snap-align:start;
 }
 
-.video-container video {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+.video video {
+  width:100%;
+  height:100%;
+  object-fit:cover;
 }
 
-/* Overlay */
+/* OVERLAY */
 .overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  height: 100%;
-  width: 100%;
+  position:absolute;
+  width:100%;
+  height:100%;
 }
 
-/* Right buttons */
+/* RIGHT BUTTONS */
 .right {
-  position: absolute;
-  right: 10px;
-  bottom: 80px;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
+  position:absolute;
+  right:10px;
+  bottom:80px;
+  display:flex;
+  flex-direction:column;
+  gap:20px;
 }
 
 .right button {
-  background: rgba(0,0,0,0.5);
-  border: none;
-  color: white;
-  font-size: 18px;
-  padding: 12px;
-  border-radius: 50%;
-  cursor: pointer;
+  background:rgba(0,0,0,0.5);
+  color:white;
+  border:none;
+  padding:12px;
+  border-radius:50%;
 }
 
-/* Bottom text */
+/* TEXT */
 .bottom {
-  position: absolute;
-  left: 10px;
-  bottom: 20px;
-  color: white;
+  position:absolute;
+  left:10px;
+  bottom:20px;
+  color:white;
 }
 
-.bottom h4 {
-  margin: 0;
+/* DASHBOARD */
+#dashboard {
+  position:absolute;
+  top:10px;
+  left:10px;
+  z-index:10;
 }
 
-.bottom p {
-  margin: 5px 0 0;
-  font-size: 14px;
+#dashboard button {
+  padding:8px;
+  margin:5px;
 }
 </style>
 </head>
 
 <body>
 
-<div class="feed">
+<!-- LOGIN -->
+<div id="auth">
+  <h2>SHOPLIVE</h2>
+  <input id="email" placeholder="Email"><br>
+  <input id="password" type="password" placeholder="Password"><br>
+  <button id="signup">Sign Up</button>
+  <button id="login">Login</button>
+</div>
 
-  <!-- VIDEO 1 -->
-  <div class="video-container">
-    <video src="https://www.w3schools.com/html/movie.mp4" muted loop></video>
+<!-- APP -->
+<div id="app">
 
-    <div class="overlay">
-      <div class="right">
-        <button>❤️</button>
-        <button>💬</button>
-        <button>⭐</button>
-        <button>🔗</button>
-      </div>
-
-      <div class="bottom">
-        <h4>@shoplive</h4>
-        <p>Best product deals 🔥</p>
-      </div>
-    </div>
+  <div id="dashboard">
+    <button id="logout">Logout</button>
+    <button>Start Live</button>
   </div>
 
-  <!-- VIDEO 2 -->
-  <div class="video-container">
-    <video src="https://www.w3schools.com/html/movie.mp4" muted loop></video>
+  <div class="feed">
 
-    <div class="overlay">
-      <div class="right">
-        <button>❤️</button>
-        <button>💬</button>
-        <button>⭐</button>
-        <button>🔗</button>
-      </div>
-
-      <div class="bottom">
-        <h4>@seller</h4>
-        <p>Flash sale today 💰</p>
+    <div class="video">
+      <video src="https://www.w3schools.com/html/movie.mp4" muted loop></video>
+      <div class="overlay">
+        <div class="right">
+          <button>❤️</button>
+          <button>💬</button>
+          <button>⭐</button>
+        </div>
+        <div class="bottom">
+          <h4>@shoplive</h4>
+          <p>Best deals 🔥</p>
+        </div>
       </div>
     </div>
+
+    <div class="video">
+      <video src="https://www.w3schools.com/html/movie.mp4" muted loop></video>
+      <div class="overlay">
+        <div class="right">
+          <button>❤️</button>
+          <button>💬</button>
+          <button>⭐</button>
+        </div>
+        <div class="bottom">
+          <h4>@seller</h4>
+          <p>Shop now 💰</p>
+        </div>
+      </div>
+    </div>
+
   </div>
 
 </div>
@@ -128,19 +206,16 @@ html, body {
 <script>
 const videos = document.querySelectorAll("video");
 
-function playVisibleVideo() {
-  videos.forEach(video => {
-    const rect = video.getBoundingClientRect();
-    if (rect.top >= 0 && rect.bottom <= window.innerHeight) {
-      video.play();
-    } else {
-      video.pause();
-    }
+function autoPlay() {
+  videos.forEach(v => {
+    const r = v.getBoundingClientRect();
+    if (r.top >= 0 && r.bottom <= window.innerHeight) v.play();
+    else v.pause();
   });
 }
 
-window.addEventListener("scroll", playVisibleVideo);
-window.addEventListener("load", playVisibleVideo);
+window.addEventListener("scroll", autoPlay);
+window.addEventListener("load", autoPlay);
 </script>
 
 </body>
