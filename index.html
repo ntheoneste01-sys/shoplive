@@ -1,63 +1,124 @@
 <!DOCTYPE html>
 <html>
 <head>
- 
+  <title>SHOPLIVE</title>
+
+  <!-- Firebase SDK -->
   <script type="module">
-  // Import the functions you need from the SDKs you need
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
-  // TODO: Add SDKs for Firebase products that you want to use
-  // https://firebase.google.com/docs/web/setup#available-libraries
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
 
-  // Your web app's Firebase configuration
-  const firebaseConfig = {
-    apiKey: "AIzaSyBmBE6bKr7P4SdP-iFkCDSqN35WPLL3EHA",
-    authDomain: "shoplive-7033f.firebaseapp.com",
-    projectId: "shoplive-7033f",
-    storageBucket: "shoplive-7033f.firebasestorage.app",
-    messagingSenderId: "287976562988",
-    appId: "1:287976562988:web:69f3cbfb2ff085f1170c89"
-  };
+    const firebaseConfig = {
+      apiKey: "AIzaSyBmBE6bKr7P4SdP-iFkCDSqN35WPLL3EHA",
+      authDomain: "shoplive-7033f.firebaseapp.com",
+      projectId: "shoplive-7033f",
+      storageBucket: "shoplive-7033f.firebasestorage.app",
+      messagingSenderId: "287976562988",
+      appId: "1:287976562988:web:69f3cbfb2ff085f1170c89"
+    };
 
-  // Initialize Firebase
-  const app = initializeApp(firebaseConfig);
-</script>
+    const app = initializeApp(firebaseConfig);
+  </script>
+
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      overflow: hidden;
+      background: black;
+    }
+
+    .feed {
+      height: 100vh;
+      width: 100%;
+      overflow-y: scroll;
+      scroll-snap-type: y mandatory;
+    }
+
+    .video {
+      position: relative;
+      width: 100%;
+      height: 100vh;
+      scroll-snap-align: start;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .video video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    /* Overlay buttons (example) */
+    .overlay {
+      position: absolute;
+      bottom: 20px;
+      right: 20px;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      z-index: 10;
+    }
+
+    .overlay button {
+      background: rgba(0,0,0,0.5);
+      border: none;
+      color: white;
+      padding: 10px;
+      border-radius: 50%;
+      cursor: pointer;
+    }
+  </style>
 </head>
-
 <body>
 
-<div class="video">
-  <video autoplay loop muted>
-    <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4">
-  </video>
+  <div class="feed">
+    <div class="video">
+      <video autoplay loop muted>
+        <source src="https://www.w3schools.com/html/movie.mp4" type="video/mp4">
+      </video>
+      <div class="overlay">
+        <button>❤️</button>
+        <button>💬</button>
+        <button>⭐</button>
+      </div>
+    </div>
 
-  <div class="overlay">
-    <h2>🔥 Live Product 1</h2>
-    <p>Buy instantly while watching</p>
+    <div class="video">
+      <video autoplay loop muted>
+        <source src="https://www.w3schools.com/html/movie.mp4" type="video/mp4">
+      </video>
+      <div class="overlay">
+        <button>❤️</button>
+        <button>💬</button>
+        <button>⭐</button>
+      </div>
+    </div>
+
+    <!-- Ongera video uko ushaka -->
   </div>
 
-  <div class="actions">
-    <button>❤️</button>
-    <button>💬</button>
-    <button>🛒</button>
-  </div>
-</div>
+  <script>
+    // Auto-play only visible video
+    const videos = document.querySelectorAll('video');
 
-<div class="video">
-  <video autoplay loop muted>
-    <source src="https://www.w3schools.com/html/movie.mp4" type="video/mp4">
-  </video>
+    function checkVisibleVideo() {
+      videos.forEach(video => {
+        const rect = video.getBoundingClientRect();
+        if(rect.top >= 0 && rect.bottom <= window.innerHeight){
+          video.play();
+        } else {
+          video.pause();
+        }
+      });
+    }
 
-  <div class="overlay">
-    <h2>🔥 Live Product 2</h2>
-    <p>Limited offer</p>
-  </div>
-
-  <div class="actions">
-    <button>❤️</button>
-    <button>💬</button>
-    <button>🛒</button>
-  </div>
-</div>
+    window.addEventListener('scroll', checkVisibleVideo);
+    window.addEventListener('load', checkVisibleVideo);
+  </script>
 
 </body>
 </html>
